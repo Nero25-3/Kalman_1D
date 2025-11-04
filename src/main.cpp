@@ -1,5 +1,7 @@
-#include <iostream>
+#include "data_generator.hpp"
+
 int main() {
-    std::cout << "Kalman 1D Demo - Project Bootstrap" << std::endl;
+    auto data = generate_noisy_motion(100, 0.1, 0.0, 1.5, 0.3);
+    write_to_csv("synthetic.csv", data);
     return 0;
 }
