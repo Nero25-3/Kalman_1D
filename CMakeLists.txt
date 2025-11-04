@@ -1,0 +1,14 @@
+cmake_minimum_required(VERSION 3.15)
+project(kalman1d_cpp LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Src
+add_executable(kalman1d_demo src/main.cpp)
+
+# GoogleTest
+enable_testing()
+add_executable(kalman1d_tests tests/kalman_test.cpp)
+target_link_libraries(kalman1d_tests gtest gtest_main pthread)
+add_test(NAME KalmanTests COMMAND kalman1d_tests)

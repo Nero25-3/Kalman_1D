@@ -1,0 +1,25 @@
+# Build files
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Visual Studio Code
+.vscode/
+
+# Object files
+*.o
+
+# Executables
+*.exe
+*.out
+*.a
+*.so
+
+# Test binaries
+tests/bin/
+
+# Other IDE/editor junk
+*.swp
+*~
