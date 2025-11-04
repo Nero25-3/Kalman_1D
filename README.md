@@ -27,6 +27,8 @@ kalman1d-cpp/
 ├── README.md
 ├── src/
 │ ├── main.cpp # Demo entry point
+| |── data_generator.cpp # data generation implementation
+| |—— data_generator.hpp # data generation interface
 │ ├── kalman.cpp # Kalman filter implementation
 │ └── kalman.hpp # Kalman filter interface
 ├── tests/
@@ -55,6 +57,17 @@ make
 ./kalman1d_demo # runs the demo
 ./kalman1d_tests # runs unit tests
 ```
+
+## Features
+### Synthetic Data Generation
+
+Generate synthetic position/velocity pairs with Gaussian noise for configurable length, time step, initial value and velocity. Export results as CSV for further analysis.
+
+Basic usage:
+auto data = generate_noisy_motion(100, 0.1, 0.0, 1.5, 0.3);
+write_to_csv("my_output.csv", data);
+
+Output columns: time, position, velocity (all in SI units).
 
 
 ## Development Roadmap
