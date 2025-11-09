@@ -43,7 +43,7 @@ kalman1d-cpp/
 
 - GCC 10+ or Clang 11+ with C++20 support
 - CMake 3.15+
-- GoogleTest (see section below)
+- GoogleTest 
 - Recommended: clang-format, clang-tidy, valgrind (optional)
 
 ### Build & Test (Linux/WSL)
@@ -74,7 +74,7 @@ Output columns: time, position, velocity (all in SI units).
 
 See the [project board](https://github.com/users/Nero25-3/projects/3/views/1) for tasks and progress.
 - [x] Project skeleton, CMake and minimal test
-- [ ] Synthetic data generator
+- [x] Synthetic data generator
 - [ ] Core Kalman class & unit tests
 - [ ] Performance benchmarking
 - [ ] Documentation and demos
@@ -86,6 +86,6 @@ Please create feature branches per major change and submit pull requests referen
 
 ## License
 
-MIT (or specify your chosen license)
+MIT 
 
 

@@ -8,7 +8,12 @@ include_directories(src)
 
 
 # Src
-add_executable(kalman1d_demo src/main.cpp src/data_generator.cpp)
+add_executable(kalman1d_demo
+    src/main.cpp
+    src/data_generator.cpp
+    src/kalman.cpp
+    src/pipeline.cpp
+)
 
 # GoogleTest
 enable_testing()
