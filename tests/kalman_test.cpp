@@ -1,8 +1,9 @@
-#include "data_generator.hpp"
-#include <gtest/gtest.h>
 #include "kalman.hpp"
-#include "pipeline.hpp"
 
+#include <gtest/gtest.h>
+
+#include "data_generator.hpp"
+#include "pipeline.hpp"
 
 TEST(KalmanTest, Dummy) {
     EXPECT_EQ(1, 1);
@@ -19,19 +20,20 @@ TEST(DataGenerator, OutputSizeAndContent) {
 
     // 3. El tiempo debe avanzar correctamente (aproximado)
     for (size_t i = 0; i < N; ++i) {
-        EXPECT_NEAR(data[i].t, i*dt, 1e-9); // tiempo exacto
+        EXPECT_NEAR(data[i].t, i * dt, 1e-9);  // tiempo exacto
         // El ruido puede darte posiciones < o >, así que solo prueba el tipo/dominio
-        EXPECT_TRUE(std::abs(data[i].position - (init + (i+1)*vel*dt)) < 2.0); // rango plausible
+        EXPECT_TRUE(std::abs(data[i].position - (init + (i + 1) * vel * dt)) <
+                    2.0);  // rango plausible
         EXPECT_EQ(data[i].velocity, vel);
     }
 }
 
-
 // Test simple del filtro de Kalman
 TEST(Kalman1D, TracksSimpleMeasurement) {
-    Kalman1D kf(0.0, 1.0, 1.0, 0.01, 0.2); // posición inicial 0, incertidumbre inicial 1, velocidad 1
+    Kalman1D kf(0.0, 1.0, 1.0, 0.01,
+                0.2);  // posición inicial 0, incertidumbre inicial 1, velocidad 1
     kf.predict(1.0);
-    kf.update(1.8); // Medición bastante más alta que el modelo
+    kf.update(1.8);  // Medición bastante más alta que el modelo
     double estimate = kf.get_position();
     // Debe estar entre 1.0 (lo que predijo el modelo) y 1.8 (medición)
     EXPECT_GT(estimate, 1.0);
@@ -52,8 +54,8 @@ TEST(Pipeline, ApplyKalmanFull) {
 // Test de exportación a CSV (cabecera y línea no vacía)
 #include <fstream>
 TEST(Pipeline, ExportCSVCreatesFile) {
-    std::vector<DataPoint> in = {{0,1,2},{1,2,3}};
-    std::vector<double> filt = { 10, 20 };
+    std::vector<DataPoint> in = {{0, 1, 2}, {1, 2, 3}};
+    std::vector<double> filt = {10, 20};
     export_csv("testcsv.csv", in, filt);
 
     std::ifstream inFile("testcsv.csv");
@@ -65,13 +67,7 @@ TEST(Pipeline, ExportCSVCreatesFile) {
     EXPECT_FALSE(line.empty());
 }
 
-
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
-
-
-
-
-
