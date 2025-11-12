@@ -21,5 +21,6 @@ void export_csv(const std::string& filename, const std::vector<DataPoint>& raw,
     out << "time,measured,filtered,velocity\n";
     for (size_t i = 0; i < raw.size(); ++i) {
         out << raw[i].t << "," << raw[i].position << "," << filtered[i] << "," << raw[i].velocity
-            << "\n";}
+            << "\n";
+    }
 }
