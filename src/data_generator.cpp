@@ -1,7 +1,9 @@
 #include "data_generator.hpp"
+
 #include <fstream>
 
-std::vector<DataPoint> generate_noisy_motion(size_t n_steps, double dt, double initial_position, double velocity, double noise_std) {
+std::vector<DataPoint> generate_noisy_motion(size_t n_steps, double dt, double initial_position,
+                                             double velocity, double noise_std) {
     std::vector<DataPoint> out;
     std::default_random_engine rng{std::random_device{}()};
     std::normal_distribution<double> noise_distr{0.0, noise_std};

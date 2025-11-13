@@ -1,8 +1,7 @@
 #pragma once
-#include <vector>
 #include <random>
 #include <string>
-
+#include <vector>
 
 // Each datapoint is: time, position, velocity
 struct DataPoint {
@@ -13,7 +12,7 @@ struct DataPoint {
 
 /**
  * @brief Generates N synthetic position/velocity samples with Gaussian noise.
- * 
+ *
  * @param n_steps Number of steps/samples generated
  * @param dt Sampling interval (time between steps, in seconds)
  * @param initial_position Initial position at t=0
@@ -22,10 +21,8 @@ struct DataPoint {
  * @return std::vector<DataPoint> Vector containing simulated time, noisy position, and velocity
  */
 
-std::vector<DataPoint> generate_noisy_motion(
-    size_t n_steps, double dt, double initial_position, double velocity,
-    double noise_std);
-
+std::vector<DataPoint> generate_noisy_motion(size_t n_steps, double dt, double initial_position,
+                                             double velocity, double noise_std);
 
 /**
  * @brief Writes a vector of [time, position, velocity] samples to a CSV file.

@@ -3,11 +3,11 @@
 
 /**
  * @brief One-dimensional Kalman filter for position estimation with constant velocity model.
- * 
+ *
  * Implements standard predict and update steps.
  */
 class Kalman1D {
-public:
+   public:
     /**
      * @brief Construct Kalman filter with initial parameters.
      * @param initial_position Initial estimate of position
@@ -16,8 +16,8 @@ public:
      * @param process_var Process noise variance (model error)
      * @param measurement_var Measurement noise variance
      */
-    Kalman1D(double initial_position, double initial_uncertainty,
-             double velocity, double process_var, double measurement_var);
+    Kalman1D(double initial_position, double initial_uncertainty, double velocity,
+             double process_var, double measurement_var);
 
     /**
      * @brief Perform prediction step (time update).
@@ -41,10 +41,10 @@ public:
      */
     double get_uncertainty() const;
 
-private:
-    double position_;        ///< Estimated position
-    double velocity_;        ///< Constant velocity
-    double uncertainty_;     ///< Estimate uncertainty (variance)
-    double process_var_;     ///< Process noise variance
-    double measurement_var_; ///< Measurement noise variance
+   private:
+    double position_;         ///< Estimated position
+    double velocity_;         ///< Constant velocity
+    double uncertainty_;      ///< Estimate uncertainty (variance)
+    double process_var_;      ///< Process noise variance
+    double measurement_var_;  ///< Measurement noise variance
 };

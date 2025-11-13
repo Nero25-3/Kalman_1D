@@ -1,10 +1,12 @@
 #include "kalman.hpp"
 
-Kalman1D::Kalman1D(double initial_position, double initial_uncertainty,
-                   double velocity, double process_var, double measurement_var)
-    : position_(initial_position), velocity_(velocity),
+Kalman1D::Kalman1D(double initial_position, double initial_uncertainty, double velocity,
+                   double process_var, double measurement_var)
+    : position_(initial_position),
+      velocity_(velocity),
       uncertainty_(initial_uncertainty),
-      process_var_(process_var), measurement_var_(measurement_var) {}
+      process_var_(process_var),
+      measurement_var_(measurement_var) {}
 
 void Kalman1D::predict(double dt) {
     position_ += velocity_ * dt;
