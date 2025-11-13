@@ -24,6 +24,14 @@ add_executable(kalman1d_tests
     src/kalman.cpp
     src/pipeline.cpp
 )
+
+# Benchmark
+add_executable(kalman1d_benchmark
+    src/pipeline_benchmark.cpp
+    src/data_generator.cpp
+    src/kalman.cpp
+)
+
 target_link_libraries(kalman1d_tests gtest gtest_main pthread)
 add_test(NAME KalmanTests COMMAND kalman1d_tests)
 

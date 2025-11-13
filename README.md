@@ -76,7 +76,7 @@ See the [project board](https://github.com/users/Nero25-3/projects/3/views/1) fo
 - [x] Project skeleton, CMake and minimal test
 - [x] Synthetic data generator
 - [x] Core Kalman class & unit tests
-- [ ] Performance benchmarking
+- [x] Performance benchmarking
 - [ ] Documentation and demos
 
 ## Contributing
