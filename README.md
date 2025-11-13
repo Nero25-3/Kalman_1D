@@ -75,7 +75,7 @@ Output columns: time, position, velocity (all in SI units).
 See the [project board](https://github.com/users/Nero25-3/projects/3/views/1) for tasks and progress.
 - [x] Project skeleton, CMake and minimal test
 - [x] Synthetic data generator
-- [ ] Core Kalman class & unit tests
+- [x] Core Kalman class & unit tests
 - [ ] Performance benchmarking
 - [ ] Documentation and demos
 
