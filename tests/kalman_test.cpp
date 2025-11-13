@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 #include "kalman.hpp"
 #include "pipeline.hpp"
+#include <random>
 
 
 TEST(KalmanTest, Dummy) {
@@ -64,6 +65,52 @@ TEST(Pipeline, ExportCSVCreatesFile) {
     getline(inFile, line);
     EXPECT_FALSE(line.empty());
 }
+
+TEST(KalmanFilterSimple, StaticPosition) {
+    // Medición constante en 10.0
+    Kalman1D kf(0.0, 1.0, 0.0, 0.01, 0.05); // Posición inicial lejos de la verdad
+    for (int i = 0; i < 30; ++i) {
+        kf.predict(1.0);           // dt sin movimiento real
+        kf.update(10.0);           // medición siempre 10
+    }
+    double estimate = kf.get_position();
+    EXPECT_NEAR(estimate, 10.0, 0.05);    // el filtro debe converger cerca de 10.0
+    EXPECT_LT(kf.get_uncertainty(), 0.2); // la incertidumbre debe reducirse bastante
+}
+
+TEST(KalmanFilterSimple, ConstantVelocity) {
+    double initial = 0.0;
+    double velocity = 1.5;
+    Kalman1D kf(initial, 1.0, velocity, 0.01, 0.05);
+    double t = 0.0, dt = 1.0;
+    for (int i = 0; i < 20; ++i) {
+        t += dt;
+        double true_pos = initial + velocity * t;
+        kf.predict(dt);
+        kf.update(true_pos);              // la medición coincide con el modelo
+    }
+    double estimate = kf.get_position();
+    double expected = initial + velocity * t;
+    EXPECT_NEAR(estimate, expected, 0.05);     // el filtro sigue el movimiento perfectamente
+    EXPECT_LT(kf.get_uncertainty(), 0.2);
+}
+
+TEST(KalmanFilterSimple, ConstantVelocityWithNoise) {
+    double initial = 0.0, velocity = 1.0, dt = 1.0;
+    Kalman1D kf(initial, 1.0, velocity, 0.01, 0.5); // ruido de medición alto
+    std::default_random_engine rng(42);
+    std::normal_distribution<double> noise(0.0, 0.5);
+    for (int i = 0; i < 50; ++i) {
+        double true_pos = initial + velocity * (i+1) * dt;
+        double meas = true_pos + noise(rng);
+        kf.predict(dt);
+        kf.update(meas);
+    }
+    double final_estimate = kf.get_position();
+    double expected = initial + velocity * 50 * dt;
+    EXPECT_NEAR(final_estimate, expected, 0.7); // tolera ruido, pero sigue el modelo
+}
+
 
 
 int main(int argc, char **argv) {
