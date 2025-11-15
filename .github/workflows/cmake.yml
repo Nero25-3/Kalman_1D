@@ -1,42 +1,33 @@
-name: Build, Test & Lint (CMake)
+name: Build, Test, Lint & Plot (CMake)
 
 on:
   pull_request:
   push:
-    branches:
-      - main
-      - develop
+    branches: [main, develop]
 
 jobs:
-  build-test-lint:
+  ci:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
-
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake g++ libyaml-cpp-dev clang-format clang-tidy
+          sudo apt-get install -y cmake g++ libyaml-cpp-dev clang-format clang-tidy python3 python3-pip
+      - name: Install GoogleTest
+        run: |
           git clone https://github.com/google/googletest.git
           cd googletest && mkdir build && cd build
           cmake .. && make
           sudo make install
           cd ../../
-
-
-      - name: Configure (CMake)
+      - name: Configure & Build (CMake)
         run: |
           mkdir build
           cd build
           cmake ..
-
-      - name: Build
-        run: |
-          cd build
           make -j$(nproc)
-
       - name: Run tests
         run: |
           cd build
@@ -53,14 +44,30 @@ jobs:
           echo "log_rotate_count: 2" >> config.yaml
           ./kalman1d_tests
           ./kalman1d_demo config.yaml
-
       - name: Lint source code (clang-format)
         run: |
           if ! clang-format --dry-run --Werror $(find src/ -name '*.cpp' -or -name '*.hpp'); then
             echo "Code formatting failed! Run clang-format locally."
             exit 1
           fi
-
       - name: Static analysis (clang-tidy)
         run: |
-          clang-tidy src/*.cpp -- -I./src || { echo "Static analysis failed. Fix errors!"; exit 1; }
+          set -e
+          cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .
+          for f in src/*.cpp; do clang-tidy -p build $f; done
+      - name: Install matplotlib & pandas
+        run: |
+          pip3 install matplotlib pandas
+      - name: Plot results if CSV exists
+        run: |
+          cd build
+          if [ -f filtered.csv ]; then
+            python3 ../scripts/plots.py
+          else
+            echo "No filtered.csv, skipping plot."
+          fi
+      - name: Upload plot
+        uses: actions/upload-artifact@v4
+        with:
+          name: kalman_plot
+          path: build/kalman_results.png
