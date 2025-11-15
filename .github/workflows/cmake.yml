@@ -1,4 +1,4 @@
-name: Build, Test & Lint (CMake)
+name: Build, Test & Lint
 
 on:
   pull_request:
@@ -6,7 +6,6 @@ on:
     branches: [main, develop]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
@@ -32,6 +31,11 @@ jobs:
         run: |
           cd build
           make -j$(nproc)
+      - name: Upload build directory
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-dir
+          path: build
 
   test:
     runs-on: ubuntu-latest
@@ -39,6 +43,10 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
+      - name: Download build directory
+        uses: actions/download-artifact@v3
+        with:
+          name: build-dir
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -66,6 +74,11 @@ jobs:
           echo "log_rotate_count: 2" >> config.yaml
           ./kalman1d_tests
           ./kalman1d_demo config.yaml
+      - name: Upload build+results
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-dir
+          path: build
 
   lint:
     runs-on: ubuntu-latest
@@ -73,6 +86,10 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
+      - name: Download build directory
+        uses: actions/download-artifact@v3
+        with:
+          name: build-dir
       - name: Install clang-format
         run: sudo apt-get update && sudo apt-get install -y clang-format
       - name: Lint source code (clang-format)
@@ -86,13 +103,16 @@ jobs:
           sudo apt-get install -y clang-tidy
           clang-tidy src/*.cpp -- -I./src -I/usr/include -I/usr/include/yaml-cpp || { echo "Static analysis failed. Fix errors!"; exit 1; }
 
-
   plot:
     runs-on: ubuntu-latest
     needs: test
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
+      - name: Download build directory
+        uses: actions/download-artifact@v3
+        with:
+          name: build-dir
       - name: Install Python and matplotlib
         run: |
           sudo apt-get update
