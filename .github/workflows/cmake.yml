@@ -32,7 +32,7 @@ jobs:
           cd build
           make -j$(nproc)
       - name: Upload build directory
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-dir
           path: build
@@ -42,9 +42,9 @@ jobs:
     needs: build
     steps:
       - name: Checkout source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Download build directory
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-dir
       - name: Install dependencies
@@ -75,7 +75,7 @@ jobs:
           ./kalman1d_tests
           ./kalman1d_demo config.yaml
       - name: Upload build+results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-dir
           path: build
@@ -87,7 +87,7 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v3
       - name: Download build directory
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-dir
       - name: Install clang-format
@@ -108,9 +108,9 @@ jobs:
     needs: test
     steps:
       - name: Checkout source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Download build directory
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-dir
       - name: Install Python and matplotlib
@@ -127,7 +127,7 @@ jobs:
             echo "No filtered.csv, skipping plot."
           fi
       - name: Upload plot
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: kalman_plot
           path: build/kalman_results.png
