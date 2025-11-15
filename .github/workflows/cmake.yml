@@ -62,7 +62,7 @@ jobs:
         run: |
           cd build
           if [ -f filtered.csv ]; then
-            python3 ../scripts/plot_kalman.py
+            python3 ../scripts/plots.py
           else
             echo "No filtered.csv, skipping plot."
           fi
