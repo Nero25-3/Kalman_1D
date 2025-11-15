@@ -23,3 +23,11 @@ tests/bin/
 # Other IDE/editor junk
 *.swp
 *~
+
+# Python virtualenv
+.venv/
+__pycache__/
+*.pyc
+
+# Plot outputs
+kalman_results.png
