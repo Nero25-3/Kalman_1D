@@ -85,3 +85,28 @@ jobs:
         run: |
           sudo apt-get install -y clang-tidy
           clang-tidy src/*.cpp -- -I./src || { echo "Static analysis failed. Fix errors!"; exit 1; }
+
+  plot:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+      - name: Install Python and matplotlib
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip
+          pip3 install matplotlib pandas
+      - name: Plot results if CSV exists
+        run: |
+          cd build
+          if [ -f filtered.csv ]; then
+            python ../scripts/plot_kalman.py
+          else
+            echo "No filtered.csv, skipping plot."
+          fi
+      - name: Upload plot
+        uses: actions/upload-artifact@v3
+        with:
+          name: kalman_plot
+          path: build/kalman_results.png
