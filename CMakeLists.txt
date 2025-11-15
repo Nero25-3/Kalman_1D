@@ -4,6 +4,9 @@ project(kalman1d_cpp LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+find_package(yaml-cpp REQUIRED)
+
+
 include_directories(src)
 
 
@@ -17,6 +20,8 @@ add_executable(kalman1d_demo
     src/config.cpp
 )
 
+target_link_libraries(kalman1d_demo PRIVATE yaml-cpp)
+
 # GoogleTest
 enable_testing()
 add_executable(kalman1d_tests
@@ -27,13 +32,15 @@ add_executable(kalman1d_tests
     src/config.cpp
 )
 
+target_link_libraries(kalman1d_tests yaml-cpp)
+
 # Benchmark
 add_executable(kalman1d_benchmark
     src/pipeline_benchmark.cpp
     src/data_generator.cpp
     src/kalman.cpp
 )
-
+target_link_libraries(kalman1d_benchmark yaml-cpp)
 target_link_libraries(kalman1d_tests gtest gtest_main pthread)
 add_test(NAME KalmanTests COMMAND kalman1d_tests)
 

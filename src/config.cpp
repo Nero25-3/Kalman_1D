@@ -1,30 +1,50 @@
 #include "config.hpp"
-#include <cstdlib>
-#include <map>
-#include <functional>
-#include <iostream>
 
-KalmanConfig get_config_from_env() {
-    KalmanConfig conf = {
-        KALMAN_DEF_N, KALMAN_DEF_DT, 0.0,
-        KALMAN_DEF_VELOCITY, KALMAN_DEF_NOISE,
-        KALMAN_DEF_UNCERTAINTY, KALMAN_DEF_PROCESS_VAR,
-        KALMAN_DEF_OUTFILE, KALMAN_DEF_LOGLEVEL
-    };
-    const std::map<std::string, std::function<void(const char*)>> setters = {
-        {"KALMAN_N",            [&](const char* v){ if(v) conf.N = std::stoul(v); }},
-        {"KALMAN_DT",           [&](const char* v){ if(v) conf.dt = std::stod(v); }},
-        {"KALMAN_VELOCITY",     [&](const char* v){ if(v) conf.velocity = std::stod(v); }},
-        {"KALMAN_NOISE",        [&](const char* v){ if(v) conf.noise = std::stod(v); }},
-        {"KALMAN_OUTFILE",      [&](const char* v){ if(v) conf.outfile = v; }},
-        {"KALMAN_LOGLEVEL",     [&](const char* v){ if(v) conf.loglevel = std::stoi(v); }},
-        {"KALMAN_UNCERTAINTY",  [&](const char* v){ if(v) conf.initial_uncertainty = std::stod(v); }},
-        {"KALMAN_PROCESS_VAR",  [&](const char* v){ if(v) conf.process_var = std::stod(v); }},
-    };
-    for (const auto& kv : setters) kv.second(std::getenv(kv.first.c_str()));
+#include <yaml-cpp/yaml.h>
+
+#include <filesystem>
+#include <fstream>
+
+KalmanConfig load_config_yaml(const std::string& yamlfile) {
+    KalmanConfig conf = {100, 0.1, 0.0, 1.5, 0.3, 1.0, 0.03, "filtered.csv", 1, "kalman.log"};
+    YAML::Node config = YAML::LoadFile(yamlfile);
+
+    if (config["N"]) conf.N = config["N"].as<size_t>();
+    if (config["dt"]) conf.dt = config["dt"].as<double>();
+    if (config["velocity"]) conf.velocity = config["velocity"].as<double>();
+    if (config["noise"]) conf.noise = config["noise"].as<double>();
+    if (config["initial_uncertainty"])
+        conf.initial_uncertainty = config["initial_uncertainty"].as<double>();
+    if (config["process_var"]) conf.process_var = config["process_var"].as<double>();
+    if (config["outfile"]) conf.outfile = config["outfile"].as<std::string>();
+    if (config["loglevel"]) conf.loglevel = config["loglevel"].as<int>();
+    if (config["logfile"]) conf.logfile = config["logfile"].as<std::string>();
+    if (config["log_max_size_mb"]) conf.log_max_size_mb = config["log_max_size_mb"].as<double>();
+    if (config["log_rotate_count"]) conf.log_rotate_count = config["log_rotate_count"].as<int>();
+
     return conf;
 }
 
-void print_log(int loglevel, int msglevel, const std::string& msg) {
-    if (loglevel >= msglevel) std::cout << msg << std::endl;
+void print_log_file(int loglevel, int msglevel, const std::string& msg, const KalmanConfig& cfg) {
+    if (loglevel < msglevel) return;
+    rotate_log_if_needed(cfg);
+    std::ofstream logstream(cfg.logfile, std::ios::app);
+    logstream << msg << std::endl;
+}
+void rotate_log_if_needed(const KalmanConfig& cfg) {
+    namespace fs = std::filesystem;
+    if (!fs::exists(cfg.logfile)) return;
+    size_t cur_size = fs::file_size(cfg.logfile);
+    size_t max_size = static_cast<size_t>(cfg.log_max_size_mb * 1024 * 1024);  // Convert MB → bytes
+
+    if (cur_size < max_size) return;
+
+    for (int i = cfg.log_rotate_count; i >= 1; --i) {
+        std::string old = cfg.logfile + "." + std::to_string(i - 1);
+        std::string neu = cfg.logfile + "." + std::to_string(i);
+        if (fs::exists(neu)) fs::remove(neu);
+        if (fs::exists(old)) fs::rename(old, neu);
+    }
+    fs::rename(cfg.logfile, cfg.logfile + ".0");
+    std::ofstream newlog(cfg.logfile, std::ios::trunc);
 }
