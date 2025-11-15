@@ -84,7 +84,7 @@ jobs:
       - name: Static analysis (clang-tidy)
         run: |
           sudo apt-get install -y clang-tidy
-          clang-tidy src/*.cpp -- -I./src || { echo "Static analysis failed. Fix errors!"; exit 1; }
+          clang-tidy src/*.cpp -- -I./src -I/usr/include/yaml-cpp || { echo "Static analysis failed. Fix errors!"; exit 1; }
 
   plot:
     runs-on: ubuntu-latest
