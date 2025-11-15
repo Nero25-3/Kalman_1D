@@ -1,0 +1,60 @@
+name: Build, Test & Lint (CMake)
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-test-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ libyaml-cpp-dev clang-format clang-tidy
+
+      - name: Configure (CMake)
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+
+      - name: Build
+        run: |
+          cd build
+          make -j$(nproc)
+
+      - name: Run tests
+        run: |
+          cd build
+          echo "N: 10" > config.yaml
+          echo "dt: 0.1" >> config.yaml
+          echo "velocity: 1.0" >> config.yaml
+          echo "noise: 0.2" >> config.yaml
+          echo "initial_uncertainty: 1.0" >> config.yaml
+          echo "process_var: 0.03" >> config.yaml
+          echo "outfile: filtered.csv" >> config.yaml
+          echo "loglevel: 1" >> config.yaml
+          echo "logfile: kalman.log" >> config.yaml
+          echo "log_max_size_mb: 1" >> config.yaml
+          echo "log_rotate_count: 2" >> config.yaml
+          ./kalman1d_tests
+          ./kalman1d_demo config.yaml
+
+      - name: Lint source code (clang-format)
+        run: |
+          if ! clang-format --dry-run --Werror $(find src/ -name '*.cpp' -or -name '*.hpp'); then
+            echo "Code formatting failed! Run clang-format locally."
+            exit 1
+          fi
+
+      - name: Static analysis (clang-tidy)
+        run: |
+          clang-tidy src/*.cpp -- -I./src || { echo "Static analysis failed. Fix errors!"; exit 1; }
