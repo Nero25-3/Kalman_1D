@@ -138,7 +138,7 @@ See the [project board](https://github.com/users/Nero25-3/projects/3/views/1) fo
 - [x] Synthetic data generator
 - [x] Core Kalman class & unit tests
 - [x] Performance benchmarking
-- [ ] Documentation and demos
+- [x] Documentation and demos
 
 ## Contributing
 
