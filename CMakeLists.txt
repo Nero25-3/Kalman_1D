@@ -14,6 +14,7 @@ add_executable(kalman1d_demo
     src/data_generator.cpp
     src/kalman.cpp
     src/pipeline.cpp
+    src/config.cpp
 )
 
 # GoogleTest
@@ -23,6 +24,7 @@ add_executable(kalman1d_tests
     src/data_generator.cpp
     src/kalman.cpp
     src/pipeline.cpp
+    src/config.cpp
 )
 
 # Benchmark

@@ -5,35 +5,27 @@
 #include "data_generator.hpp"
 #include "kalman.hpp"
 #include "pipeline.hpp"
+#include "config.hpp"
 
 int main() {
-    // Read environment variables with defaults
-    const char* env_N = std::getenv("KALMAN_N");
-    const char* env_dt = std::getenv("KALMAN_DT");
-    const char* env_noise = std::getenv("KALMAN_NOISE");
-    const char* env_velocity = std::getenv("KALMAN_VELOCITY");
-    const char* env_datafile = std::getenv("KALMAN_OUTFILE");
-    const char* env_loglevel = std::getenv("KALMAN_LOGLEVEL");
+ KalmanConfig cfg = get_config_from_env();
 
-    size_t N = env_N ? std::stoul(env_N) : 100;
-    double dt = env_dt ? std::stod(env_dt) : 0.1;
-    double initial_pos = 0.0;
-    double velocity = env_velocity ? std::stod(env_velocity) : 1.5;
-    double noise = env_noise ? std::stod(env_noise) : 0.3;
-    std::string outfile = env_datafile ? env_datafile : "filtered.csv";
-    int loglevel = env_loglevel ? std::stoi(env_loglevel) : 1;  // 1=info, 2=debug
+    print_log(cfg.loglevel, 1, "[INFO] Kalman Demo Config:"
+        "\n  N=" + std::to_string(cfg.N) +
+        "\n  dt=" + std::to_string(cfg.dt) +
+        "\n  velocity=" + std::to_string(cfg.velocity) +
+        "\n  noise=" + std::to_string(cfg.noise) +
+        "\n  initial_uncertainty=" + std::to_string(cfg.initial_uncertainty) +
+        "\n  process_var=" + std::to_string(cfg.process_var) +
+        "\n  outfile=" + cfg.outfile +
+        "\n  loglevel=" + std::to_string(cfg.loglevel));
 
-    if (loglevel >= 1)
-        std::cout << "[INFO] N=" << N << ", dt=" << dt << ", velocity=" << velocity
-                  << ", noise=" << noise << ", output=" << outfile << std::endl;
+    auto data = generate_noisy_motion(cfg.N, cfg.dt, cfg.initial_pos, cfg.velocity, cfg.noise);
+    Kalman1D kf_proto(cfg.initial_pos, cfg.initial_uncertainty, cfg.velocity, cfg.process_var, cfg.noise);
+    auto filtered = apply_kalman(data, cfg.dt, kf_proto);
+    export_csv(cfg.outfile, data, filtered);
 
-    auto data = generate_noisy_motion(N, dt, initial_pos, velocity, noise);
-    Kalman1D kf_proto(initial_pos, 1.0, velocity, 0.03, noise);
-    auto filtered = apply_kalman(data, dt, kf_proto);
-    export_csv(outfile, data, filtered);
-
-    if (loglevel >= 2)
-        std::cout << "[DEBUG] First filtered value: " << filtered.front()
-                  << " Last filtered value: " << filtered.back() << std::endl;
+    print_log(cfg.loglevel, 2, "[DEBUG] First filtered value: " + std::to_string(filtered.front())
+        + ", Last filtered value: " + std::to_string(filtered.back()));
     return 0;
 }
