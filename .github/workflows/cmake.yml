@@ -47,9 +47,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-dir
-      - name: Move build artifact
+      - name: Move build artifact to root
         run: |
-          if [ -d build-dir ]; then mv build-dir build; fi
+          if [ -d build-dir/build ]; then mv build-dir/build ./build; fi
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -93,9 +93,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-dir
-      - name: Move build artifact
+      - name: Move build artifact to root
         run: |
-          if [ -d build-dir ]; then mv build-dir build; fi
+          if [ -d build-dir/build ]; then mv build-dir/build ./build; fi
       - name: Install clang-format and clang-tidy
         run: sudo apt-get update && sudo apt-get install -y clang-format clang-tidy
       - name: Lint source code (clang-format)
@@ -118,9 +118,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-dir
-      - name: Move build artifact
+      - name: Move build artifact to root
         run: |
-          if [ -d build-dir ]; then mv build-dir build; fi
+          if [ -d build-dir/build ]; then mv build-dir/build ./build; fi
       - name: Install Python and matplotlib
         run: |
           sudo apt-get update
