@@ -66,13 +66,34 @@ or
 ```
 git clone https://github.com/Nero25-3/Kalman_1D.git
 cd Kalman_1D
-**Clean and build all modules:**
-./build.sh clean
-Cleans previous builds and compiles all modules: demo, tests, benchmark.
 
-**Incremental build:**
-./build.sh
-Compiles or updates only changed modules.
+**Building the Project**
+To build the project, use the provided build.sh script. You must explicitly call the build action (or clean).
+
+**Usage**:
+
+./build.sh clean
+
+Removes the build/ directory and all build artifacts.
+
+./build.sh build
+
+Builds the project and generates a default configuration file (build/config.yaml).
+
+./build.sh build [path/to/your/config.yaml]
+
+Builds the project and copies your custom configuration YAML to build/config.yaml.
+
+**Details**:
+
+The configuration file (config.yaml) used for the main pipeline is always located in build/config.yaml.
+
+If you do not supply a config.yaml when running build, a default version will be created with recommended parameters.
+
+You can customize all pipeline and logging options by editing config.yaml before running the demo.
+
+You must run build.sh build before running any executable, to ensure the config is available in the build directory.
+
 
 **Run main pipeline demo:**
 ./run.sh demo
@@ -117,7 +138,7 @@ See the [project board](https://github.com/users/Nero25-3/projects/3/views/1) fo
 - [x] Synthetic data generator
 - [x] Core Kalman class & unit tests
 - [x] Performance benchmarking
-- [ ] Documentation and demos
+- [x] Documentation and demos
 
 ## Contributing
 

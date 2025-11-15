@@ -1,0 +1,11 @@
+N: 200
+dt: 0.05
+velocity: 1.7
+noise: 0.15
+initial_uncertainty: 1.0
+process_var: 0.03
+outfile: filtered.csv
+loglevel: 1
+logfile: kalman.log
+log_max_size_mb: 3     #  MB
+log_rotate_count: 3    # Keep up to 3 rotated log files
