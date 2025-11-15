@@ -23,17 +23,21 @@ Estimating states (position, velocity) from noisy measurements is critical in fi
 ## Directory Structure
 ```
 kalman1d-cpp/
-├── CMakeLists.txt
-├── README.md
 ├── src/
 │ ├── main.cpp # Demo entry point
-| |── data_generator.cpp # data generation implementation
-| |—— data_generator.hpp # data generation interface
+│ ├── data_generator.cpp # Data generation implementation
+│ ├── data_generator.hpp # Data generation interface
 │ ├── kalman.cpp # Kalman filter implementation
-│ └── kalman.hpp # Kalman filter interface
+│ ├── kalman.hpp # Kalman filter interface
+│ └── pipeline.cpp # Pipeline implementation
 ├── tests/
 │ └── test_kalman.cpp # Unit tests (GoogleTest)
 ├── .gitignore
+├── README.md
+├── CMakeLists.txt
+├── build.sh # Build script
+├── run.sh # Run script
+├── format_and_check.sh # Formatting/static analysis script
 ```
 
 
@@ -44,7 +48,7 @@ kalman1d-cpp/
 - GCC 10+ or Clang 11+ with C++20 support
 - CMake 3.15+
 - GoogleTest 
-- Recommended: clang-format, clang-tidy, valgrind (optional)
+- Recommended: clang-format, clang-tidy
 
 ### Build & Test (Linux/WSL)
 
@@ -57,6 +61,42 @@ make
 ./kalman1d_demo # runs the demo
 ./kalman1d_tests # runs unit tests
 ```
+or
+
+```
+git clone https://github.com/Nero25-3/Kalman_1D.git
+cd Kalman_1D
+**Clean and build all modules:**
+./build.sh clean
+Cleans previous builds and compiles all modules: demo, tests, benchmark.
+
+**Incremental build:**
+./build.sh
+Compiles or updates only changed modules.
+
+**Run main pipeline demo:**
+./run.sh demo
+Runs the main Kalman filter demo. Output: `filtered.csv` (default, can be changed with environment variable).
+
+**Run unit tests:**
+./run.sh tests
+Executes all GoogleTest unit tests.
+
+**Run performance benchmark:**
+./run.sh benchmark
+Runs the latency benchmark. Configure sample size/output file using env variables.
+
+### Advanced: Environment-based configuration
+Customize parameters for demo/benchmark:
+KALMAN_N=250 KALMAN_DT=0.05 KALMAN_NOISE=0.1 KALMAN_VELOCITY=2 KALMAN_OUTFILE=result.csv ./run.sh demo
+KALMAN_BENCH_SIZE=50000 KALMAN_BENCHFILE=latency.csv ./run.sh benchmark
+KALMAN_LOGLEVEL=2 ./run.sh demo
+
+### Code Formatting & Static Analysis
+Format sources and check with clang-tidy:
+./format_and_check.sh
+```
+
 
 ## Features
 ### Synthetic Data Generation
