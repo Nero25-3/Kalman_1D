@@ -6,6 +6,7 @@
 std::vector<double> apply_kalman(const std::vector<DataPoint>& raw, double dt,
                                  const Kalman1D& kf_proto) {
     std::vector<double> filtered;
+    filtered.reserve(raw.size()); // Reserve space to avoid reallocations
     Kalman1D kf = kf_proto;  // Copy the filter to avoid modifying input
     for (const auto& datapoint : raw) {
         kf.predict(dt);
