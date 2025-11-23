@@ -10,8 +10,8 @@ std::vector<double> apply_kalman(const std::vector<DataPoint>& raw, double dt,
     Kalman1D kf = kf_proto;        // Copy the filter to avoid modifying input
     for (size_t i = 0; i < raw.size(); ++i) {
         kf.predict(dt);
-        kf.update(raw[i].position); // Use measured position
-        filtered[i] = kf.get_position(); // Store filtered position
+        kf.update(raw[i].position);       // Use measured position
+        filtered[i] = kf.get_position();  // Store filtered position
     }
     return filtered;
 }

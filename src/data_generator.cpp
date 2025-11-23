@@ -4,7 +4,7 @@
 
 std::vector<DataPoint> generate_noisy_motion(size_t n_steps, double dt, double initial_position,
                                              double velocity, double noise_std) {
-    std::vector<DataPoint> out(n_steps); // Preallocate for efficiency
+    std::vector<DataPoint> out(n_steps);  // Preallocate for efficiency
     std::default_random_engine rng{std::random_device{}()};
     std::normal_distribution<double> noise_distr{0.0, noise_std};
 
@@ -13,7 +13,7 @@ std::vector<DataPoint> generate_noisy_motion(size_t n_steps, double dt, double i
         double t = i * dt;
         pos += velocity * dt;
         double noisy_pos = pos + noise_distr(rng);
-        out[i]= {t, noisy_pos, velocity}; // Store time, noisy position, and velocity
+        out[i] = {t, noisy_pos, velocity};  // Store time, noisy position, and velocity
     }
     return out;
 }
