@@ -4,6 +4,7 @@ velocity: 1.7
 noise: 0.15
 initial_uncertainty: 1.0
 process_var: 0.03
+measurement_var: 1.0
 outfile: filtered.csv
 loglevel: 1
 logfile: kalman.log

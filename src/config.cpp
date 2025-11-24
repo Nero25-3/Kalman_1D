@@ -5,22 +5,29 @@
 #include <filesystem>
 #include <fstream>
 
+template <typename T>
+void assign_if_exists(const YAML::Node& node, const std::string& key, T& field) {
+    if (node[key]) {
+        field = node[key].as<T>();
+    }
+}
+
 KalmanConfig load_config_yaml(const std::string& yamlfile) {
-    KalmanConfig conf = {100, 0.1, 0.0, 1.5, 0.3, 1.0, 0.03, "filtered.csv", 1, "kalman.log"};
+    KalmanConfig conf = {100, 0.1, 0.0, 1.5, 0.3, 1.0, 0.03, 1.0, "filtered.csv", 1, "kalman.log"};
     YAML::Node config = YAML::LoadFile(yamlfile);
 
-    if (config["N"]) conf.N = config["N"].as<size_t>();
-    if (config["dt"]) conf.dt = config["dt"].as<double>();
-    if (config["velocity"]) conf.velocity = config["velocity"].as<double>();
-    if (config["noise"]) conf.noise = config["noise"].as<double>();
-    if (config["initial_uncertainty"])
-        conf.initial_uncertainty = config["initial_uncertainty"].as<double>();
-    if (config["process_var"]) conf.process_var = config["process_var"].as<double>();
-    if (config["outfile"]) conf.outfile = config["outfile"].as<std::string>();
-    if (config["loglevel"]) conf.loglevel = config["loglevel"].as<int>();
-    if (config["logfile"]) conf.logfile = config["logfile"].as<std::string>();
-    if (config["log_max_size_mb"]) conf.log_max_size_mb = config["log_max_size_mb"].as<double>();
-    if (config["log_rotate_count"]) conf.log_rotate_count = config["log_rotate_count"].as<int>();
+    assign_if_exists(config, "N", conf.N);
+    assign_if_exists(config, "dt", conf.dt);
+    assign_if_exists(config, "velocity", conf.velocity);
+    assign_if_exists(config, "noise", conf.noise);
+    assign_if_exists(config, "initial_uncertainty", conf.initial_uncertainty);
+    assign_if_exists(config, "process_var", conf.process_var);
+    assign_if_exists(config, "measurement_var", conf.measurement_var);
+    assign_if_exists(config, "outfile", conf.outfile);
+    assign_if_exists(config, "loglevel", conf.loglevel);
+    assign_if_exists(config, "logfile", conf.logfile);
+    assign_if_exists(config, "log_max_size_mb", conf.log_max_size_mb);
+    assign_if_exists(config, "log_rotate_count", conf.log_rotate_count);
 
     return conf;
 }

@@ -9,6 +9,7 @@ struct KalmanConfig {
     double noise;
     double initial_uncertainty;
     double process_var;
+    double measurement_var;
     std::string outfile;
     int loglevel;
     std::string logfile;
