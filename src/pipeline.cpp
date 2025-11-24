@@ -5,13 +5,13 @@
 
 std::vector<double> apply_kalman(const std::vector<DataPoint>& raw, double dt,
                                  const Kalman1D& kf_proto) {
-    std::vector<double> filtered;
-    filtered.reserve(raw.size());  // Reserve space to avoid reallocations
-    Kalman1D kf = kf_proto;        // Copy the filter to avoid modifying input
+    std::vector<double> filtered(raw.size());  // Prepare output vector
+    filtered.reserve(raw.size());              // Reserve space to avoid reallocations
+    Kalman1D kf = kf_proto;                    // Copy the filter to avoid modifying input
     for (size_t i = 0; i < raw.size(); ++i) {
         kf.predict(dt);
-        kf.update(raw[i].position); // Use measured position
-        filtered[i] = kf.get_position(); // Store filtered position
+        kf.update(raw[i].position);       // Use measured position
+        filtered[i] = kf.get_position();  // Store filtered position
     }
     return filtered;
 }
