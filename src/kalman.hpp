@@ -13,8 +13,8 @@ class Kalman1D {
      * @param initial_position Initial estimate of position
      * @param initial_uncertainty Initial estimate uncertainty (variance)
      * @param velocity Constant model velocity
-     * @param process_var Process noise variance (model error)
-     * @param measurement_var Measurement noise variance
+     * @param process_var Process noise variance (model error, Q)
+     * @param measurement_var Measurement noise variance (R)
      */
     Kalman1D(double initial_position, double initial_uncertainty, double velocity,
              double process_var, double measurement_var);
@@ -45,6 +45,6 @@ class Kalman1D {
     double position_;         ///< Estimated position
     double velocity_;         ///< Constant velocity
     double uncertainty_;      ///< Estimate uncertainty (variance)
-    double process_var_;      ///< Process noise variance
-    double measurement_var_;  ///< Measurement noise variance
+    double process_var_;      ///< Q:Process noise variance, tune for system dynamics
+    double measurement_var_;  ///< R:Measurement noise variance, tune for sensor quality
 };
